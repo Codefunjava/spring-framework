@@ -23,6 +23,8 @@ import org.springframework.util.Assert;
 /**
  * Representation of an alias that has been registered during the parsing process.
  *
+ * 定义对alias的简单增删改等操作。
+ *
  * @author Juergen Hoeller
  * @since 2.0
  * @see ReaderEventListener#aliasRegistered(AliasDefinition)
