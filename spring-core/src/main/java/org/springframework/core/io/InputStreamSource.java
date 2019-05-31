@@ -31,6 +31,8 @@ import java.io.InputStream;
  * This makes this interface useful as an abstract content source for mail
  * attachments, for example.
  *
+ * 封装任何能返回InputStream的类，比如File、Classpath下的资源和ByteArray等。
+ *
  * @author Juergen Hoeller
  * @since 20.01.2004
  * @see java.io.InputStream
@@ -47,6 +49,9 @@ public interface InputStreamSource {
 	 * as JavaMail, which needs to be able to read the stream multiple times when
 	 * creating mail attachments. For such a use case, it is <i>required</i>
 	 * that each {@code getInputStream()} call returns a fresh stream.
+	 *
+	 * 该方法返回一个新的InputStream对象。
+	 *
 	 * @return the input stream for the underlying resource (must not be {@code null})
 	 * @throws java.io.FileNotFoundException if the underlying resource doesn't exist
 	 * @throws IOException if the content stream could not be opened

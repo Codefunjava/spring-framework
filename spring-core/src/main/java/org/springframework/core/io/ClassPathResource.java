@@ -35,6 +35,8 @@ import org.springframework.util.StringUtils;
  * resource resides in the file system, but not for resources in a JAR.
  * Always supports resolution as URL.
  *
+ * Spring的配置文件是通过ClassPathResource进行封装的。
+ *
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 28.12.2003
@@ -161,6 +163,8 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 
 	/**
 	 * This implementation opens an InputStream for the given class path resource.
+	 * 通过class或者classLoader提供的底层方法进行调用。
+	 *
 	 * @see java.lang.ClassLoader#getResourceAsStream(String)
 	 * @see java.lang.Class#getResourceAsStream(String)
 	 */
