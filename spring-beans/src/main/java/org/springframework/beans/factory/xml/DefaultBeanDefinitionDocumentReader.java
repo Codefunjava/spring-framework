@@ -130,6 +130,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
 		if (this.delegate.isDefaultNamespace(root)) {
+			// 处理profile属性
 			String profileSpec = root.getAttribute(PROFILE_ATTRIBUTE);
 			if (StringUtils.hasText(profileSpec)) {
 				String[] specifiedProfiles = StringUtils.tokenizeToStringArray(
@@ -144,8 +145,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 			}
 		}
 
+		//解压前处理, 留给子类实现
 		preProcessXml(root);
 		parseBeanDefinitions(root, this.delegate);
+		// 解析后处理, 留给子类实现
 		postProcessXml(root);
 
 		this.delegate = parent;
@@ -162,9 +165,22 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * Parse the elements at the root level in the document:
 	 * "import", "alias", "bean".
+	 *
+	 * spring的xml配置里面有两大类Bean声明：
+	 * 1. <bean id="test" class="test.TestBean"/>
+	 * 2. <tx:annotation-driver/>
+	 *
+	 * 而这两种方法的读取及解析差别是非常大的，如果采用spring默认的配置，spring当然知道该怎么做，但是如果是自定义的，那么就需要用户
+	 * 实现一些接口及配置了。
+	 *
+	 * 对于根节点或者是子节点如果是默认命令空间的话，则采用parseDefaultElement方法进行解析，否则使用delegate.parseCustomElement
+	 * 方法对自定义命名空间进行解析。而判断是否默认命名空间还是自定义命名空间的办法是使用node.getNamespaceURI()获取命名空间，并与
+	 * spring中固定的命名空间http://www.springframework.org/schema/beans进行比对。如果一致则认为是默认，否则就认为是自定义。
+	 *
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		// 对Beans的处理
 		if (delegate.isDefaultNamespace(root)) {
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
